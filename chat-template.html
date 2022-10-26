@@ -1,0 +1,803 @@
+<!DOCTYPE html>	
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Chat Demo</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+	<!-- FONTS-->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+	<!-- FONTS-->
+	<!-- BOOTSTRAP-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<!-- BOOTSTRAP-->
+</head>
+<!-- CSS STARTS-->
+<style>
+	h1, div, h3, h4, h5, h6, p, span, ul, li, a, textarea {
+		margin: 0;
+		padding: 0;
+	}
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	a,a:hover {
+		text-decoration: none;
+	}
+	a:focus {
+		text-decoration: none;
+	}
+	body {
+		overflow-x: hidden;
+		scroll-behavior: smooth;
+		font-family: 'Poppins', sans-serif;
+	}
+	.container {
+		max-width: 1440px;
+	}
+	.chat-sec {
+		padding: 100px 0px;
+	}
+	.chat-row {
+		background: #fff;
+		overflow: hidden;
+		padding-right: 80px;
+		box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+		margin: 0 10px;
+	}
+	.chatting-box {
+		padding-top: 70px;
+		padding-left: 50px;
+	}
+	.chat-listing {
+		height: 610px;
+		overflow-y: auto;
+	}
+	.chat-listing .chat-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0px 20px;
+		width: 100%;
+	}
+	.chat-listing .itemWrap {
+		background: #fff;
+		padding: 18px 0px;
+		overflow: hidden;
+		border-bottom: 1px solid #bdbdbd;
+		cursor: pointer;
+		transition: all 0.1s;
+	}
+	.chat-listing .itemWrap:last-of-type {
+		border-bottom: 0;
+	}
+	.chat-listing .itemWrap:focus-within { 
+		background: #eee;
+	}
+	.chat-listing .chat-item .title {
+		font-size: 18px;
+		font-weight: 700;
+		color: #282828;
+		transition: all 0.25s;
+	}
+	.chat-listing .chat-item .desc {
+		font-size: 15px;
+		color: #282828;
+		max-width: 300px;
+		overflow: hidden;
+		transition: all 0.25s;
+	}
+	.chat-listing .chat-item .desc span {
+		color: #737373;
+	}
+	.chat-listing .chat-item .img-box {
+		width: 50px;
+		height: 50px;
+		border-radius: 100%;
+		border: 3px solid #9c9c9c;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+	}
+	.chat-listing .chat-item .img-box img {
+		max-width: 50px;
+		width: 100%;
+		object-fit: cover;
+		object-position: center;
+	}
+	.chat-listing .chat-item .text-box {
+		width: calc(100% - 70px);
+	}
+	.chat-search-bar .form-group  {
+		position: relative;
+	}
+	.chat-search-bar .form-group .search-icon {
+		position: absolute;
+		font-size: 22px;
+		color: #7f7f7f;
+		left: 5%;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.chat-search-bar .form-group .search-icon img {
+		max-width: 22px;
+	}
+	.chat-search-bar input {
+		width: 100%;
+		height: 70px;
+		padding-left: 70px;
+		outline: none;
+		border: none;
+	}
+	.chatting-box .header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		max-width: 350px;
+		padding-bottom: 10px;
+	}
+	.chatting-box .header .img-box {
+		width: 75px;
+		height: 75px;
+		border-radius: 100%;
+		border: 3px solid #fff;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+	}
+	.chatting-box .header .img-box img {
+		max-width: 75px;
+		width: 100%;
+		height: 75px;
+		object-fit: cover;
+		object-position: center;
+	}
+	.chatting-box .header .text-box {
+		width: calc(100% - 85px)
+	}
+	.chatting-box .header .text-box .title {
+		font-size: 22px;
+		font-weight: 700;
+		color: #282828;
+	}
+	.chatting-box .header .text-box .desc {
+		font-size: 14px;
+		color: #737373;
+		max-width: 300px;
+		overflow: hidden;
+	}
+	.chatting-box .chat-middle {
+		padding: 45px 20px;
+		max-height: 420px;
+		height: 100%;
+		overflow-y: auto;
+		background: #fff5f5;
+	}
+	.chatting-box .chat-middle .message {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: flex-start;
+		margin-bottom: 40px;
+	}
+	.chatting-box .chat-middle .message.receiver {
+		align-items: flex-end;
+	}
+	.chatting-box .chat-middle .message img {
+		max-width: 36px;
+		width: 100%;
+		height: 36px;
+		overflow: hidden;
+		border-radius: 100%;
+		object-fit: cover;
+		object-position: center;
+	}
+	.chatting-box .chat-middle .message-content {
+		max-width: 700px;
+		padding: 22px 25px;
+		background: #eee;
+		font-size: 16px;
+		color: #282828;
+		margin-top: 10px;
+	}
+	.chatting-box .chat-middle .date-time {
+		font-size: 13px;
+		color: #7c7c7c;
+		padding-top: 10px;
+	}
+	.chatting-box .chat-middle .message.receiver .message-content {
+		background: #eee;
+	}
+	.chatting-box .chat-bottom .form-group {
+		position: relative;
+		line-height: 0;
+	}
+	.chatting-box .chat-bottom .form-group button {
+		position: absolute;
+		right: 22px;
+		top: 50%;
+		transform: translateY(-50%);
+		background: none;
+		border: 0;
+		font-size: 22px;
+		width: 50px;
+		height: 50px;
+		color: #282828;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.chatting-box .chat-bottom .form-group button img {
+		max-width: 25px;
+	}
+	.chatting-box .chat-bottom textarea {
+		width: 100%;
+		max-height: 62px;
+		height: 100%;
+		overflow-y: hidden;
+		border-radius: 15px;
+		border: 1px solid #e1e1e1;
+		resize: none;
+		padding: 30px 35px;
+		outline: none;
+		box-shadow: rgba(0, 0, 0, 0.15) 0px 25px 50px -12px;
+	} 
+	.chatting-box .chat-middle::-webkit-scrollbar, 
+	.chat-listing::-webkit-scrollbar {
+		width: 5px;
+	}                  
+	.chatting-box .chat-middle::-webkit-scrollbar-track, 
+	.chat-listing::-webkit-scrollbar-track {
+		-webkit-box-shadow: none; 
+		background: #eee;
+	}                   
+	.chatting-box .chat-middle::-webkit-scrollbar-thumb, 
+	.chat-listing::-webkit-scrollbar-thumb {
+		background: #9c9c9c;
+	}
+	.accordion-button::after {
+		display: none;
+	}
+	.pateintHeading {
+		font-size: 20px;
+		font-weight: 600;
+		color: #282828;
+	}
+	.chat-row .nav-pills .nav-link {
+		font-size: 15px;
+		color: #282828;
+		font-size: 15px;
+		font-weight: 500;
+		color: #282828;
+		padding: 10px 15px;
+		width: 100%;
+		transition: all 0.25s;
+		text-align: start;
+	}
+	.chat-row .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+		background-color: #eee;
+		color: #282828;
+	}
+	.chat-row .nav.nav-pills {
+		list-style: auto;
+	}
+	.filterForm {
+		display: flex;
+		justify-content: flex-end;
+		max-width: 600px;
+		margin-left: auto;
+		padding-bottom: 40px;
+	}
+	.filterForm select {
+		width: 40%;
+		height: 50px;
+		border: 0;
+		box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+		margin: 0 10px;
+		padding-left: 20px;
+		outline: navajowhite;
+		border-radius: 5px;
+		font-size: 15px;
+		color: #282828;
+	}
+	.filterBtn {
+		width: 50px;
+		height: 50px;
+		border: 0;
+		box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+		font-size: 15px;
+		color: #282828;
+		background: none;
+		border-radius: 5px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-left: 10px;
+		transition: all 0.25s;
+	}
+	.filterBtn:hover {
+		background: #eee;
+	}
+	.filterBtn img {
+		max-width: 22px;
+	}
+</style>
+<!-- CSS END-->
+<body>
+	<div class="container">
+		<section class="chat-sec">
+			<form action="" class="filterForm">
+				<select>
+					<option value="" disabled selected>Search Agency</option>
+					<option value="">NY General Hospital</option>
+					<option value="">CA General Hospital</option>
+					<option value="">LV General Hospital</option>
+					<option value="">LA General Hospital</option>
+				</select>
+				<select>
+					<option value="" disabled selected>Search Branch</option>
+					<option value="">Branch 001</option>
+					<option value="">Branch 002</option>
+					<option value="">Branch 003</option>
+					<option value="">Branch 004</option>
+				</select>
+				<button class="filterBtn"><img src="images/search-interface.png" alt="img"></button>
+			</form>
+
+			<div class="row chat-row">
+				<div class="col-lg-4 col-md-4 col-12 p-0">
+					<div class="left-chat-box">
+						<form class="chat-search-bar">
+							<div class="form-group">
+								<input type="search" name="" placeholder="Search Nurse...">
+								<a href="#!" class="search-icon">
+									<img src="images/search-interface.png" alt="img">
+								</a>
+							</div>
+						</form>
+
+
+						<div class="accordion chat-listing" id="accordionExample">
+							<div class="accordion-item">
+								<div class="accordion-header" id="headingOne">
+									<button class="accordion-button itemWrap" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										<a href="#!" class="chat-item">
+											<span class="img-box">
+												<img src="images/nurse.png" alt="img">
+											</span>
+											<span class="text-box">
+												<h1 class="title pb-2">Elizabeth Albert</h1>
+												<p class="desc">Agency Name: <span>NY Genral Hospital</span></p>
+												<p class="desc">Branch Name: <span>New York Branch</span></p>
+											</span>
+										</a>
+									</button>
+								</div>
+								<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+									<div class="accordion-body">
+										<p class="pateintHeading pb-1">Patients</p>
+										<ol class="nav nav-pills m-0 ps-4 flex-column" id="pills-tab" role="tablist">
+											<li class="nav-item" role="presentation">
+												<button class="nav-link active" id="pills-patients-1-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-1" type="button" role="tab" aria-controls="pills-patients-1" aria-selected="true">John Doe</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-2-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-2" type="button" role="tab" aria-controls="pills-patients-2" aria-selected="false">Kelvin Kline</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-3-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-3" type="button" role="tab" aria-controls="pills-patients-3" aria-selected="false">Albert Dun</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-4-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-4" type="button" role="tab" aria-controls="pills-patients-4" aria-selected="false">Melissa John</button>
+											</li>
+										</ol>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<div class="accordion-header" id="headingTwo">
+									<button class="accordion-button collapsed itemWrap" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+										<a href="#!" class="chat-item">
+											<span class="img-box">
+												<img src="images/nurse.png" alt="img">
+											</span>
+											<span class="text-box">
+												<h1 class="title pb-2">Olivia Michelle</h1>
+												<p class="desc">Agency Name: <span>NY Genral Hospital</span></p>
+												<p class="desc">Branch Name: <span>New York Branch</span></p>
+											</span>
+										</a>
+									</button>
+								</div>
+								<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+									<div class="accordion-body">
+										<p class="pateintHeading pb-1">Patients</p>
+										<ol class="nav nav-pills m-0 ps-4 flex-column" id="pills-tab" role="tablist">
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-1-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-1" type="button" role="tab" aria-controls="pills-patients-1" aria-selected="true">John Doe</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-2-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-2" type="button" role="tab" aria-controls="pills-patients-2" aria-selected="false">Kelvin Kline</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-3-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-3" type="button" role="tab" aria-controls="pills-patients-3" aria-selected="false">Albert Dun</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-4-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-4" type="button" role="tab" aria-controls="pills-patients-4" aria-selected="false">Melissa John</button>
+											</li>
+										</ol>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<div class="accordion-header" id="headingThree">
+									<button class="accordion-button collapsed itemWrap" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+										<a href="#!" class="chat-item">
+											<span class="img-box">
+												<img src="images/nurse.png" alt="img">
+											</span>
+											<span class="text-box">
+												<h1 class="title pb-2">Charlotte John</h1>
+												<p class="desc">Agency Name: <span>NY Genral Hospital</span></p>
+												<p class="desc">Branch Name: <span>New York Branch</span></p>
+											</span>
+										</a>
+									</button>
+								</div>
+								<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+									<div class="accordion-body">
+										<p class="pateintHeading pb-1">Patients</p>
+										<ol class="nav nav-pills m-0 ps-4 flex-column" id="pills-tab" role="tablist">
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-1-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-1" type="button" role="tab" aria-controls="pills-patients-1" aria-selected="true">John Doe</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-2-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-2" type="button" role="tab" aria-controls="pills-patients-2" aria-selected="false">Kelvin Kline</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-3-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-3" type="button" role="tab" aria-controls="pills-patients-3" aria-selected="false">Albert Dun</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-4-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-4" type="button" role="tab" aria-controls="pills-patients-4" aria-selected="false">Melissa John</button>
+											</li>
+										</ol>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<div class="accordion-header" id="headingFour">
+									<button class="accordion-button collapsed itemWrap" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+										<a href="#!" class="chat-item">
+											<span class="img-box">
+												<img src="images/nurse.png" alt="img">
+											</span>
+											<span class="text-box">
+												<h1 class="title pb-2">Sofia Ben</h1>
+												<p class="desc">Agency Name: <span>NY Genral Hospital</span></p>
+												<p class="desc">Branch Name: <span>New York Branch</span></p>
+											</span>
+										</a>
+									</button>
+								</div>
+								<div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+									<div class="accordion-body">
+										<p class="pateintHeading pb-1">Patients</p>
+										<ol class="nav nav-pills m-0 ps-4 flex-column" id="pills-tab" role="tablist">
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-1-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-1" type="button" role="tab" aria-controls="pills-patients-1" aria-selected="true">John Doe</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-2-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-2" type="button" role="tab" aria-controls="pills-patients-2" aria-selected="false">Kelvin Kline</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-3-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-3" type="button" role="tab" aria-controls="pills-patients-3" aria-selected="false">Albert Dun</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-4-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-4" type="button" role="tab" aria-controls="pills-patients-4" aria-selected="false">Melissa John</button>
+											</li>
+										</ol>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item">
+								<div class="accordion-header" id="headingFive">
+									<button class="accordion-button collapsed itemWrap" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+										<a href="#!" class="chat-item">
+											<span class="img-box">
+												<img src="images/nurse.png" alt="img">
+											</span>
+											<span class="text-box">
+												<h1 class="title pb-2">Emily Brett</h1>
+												<p class="desc">Agency Name: <span>NY Genral Hospital</span></p>
+												<p class="desc">Branch Name: <span>New York Branch</span></p>
+											</span>
+										</a>
+									</button>
+								</div>
+								<div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+									<div class="accordion-body">
+										<p class="pateintHeading pb-1">Patients</p>
+										<ol class="nav nav-pills m-0 ps-4 flex-column" id="pills-tab" role="tablist">
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-1-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-1" type="button" role="tab" aria-controls="pills-patients-1" aria-selected="true">John Doe</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-2-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-2" type="button" role="tab" aria-controls="pills-patients-2" aria-selected="false">Kelvin Kline</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-3-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-3" type="button" role="tab" aria-controls="pills-patients-3" aria-selected="false">Albert Dun</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-patients-4-tab" data-bs-toggle="pill" data-bs-target="#pills-patients-4" type="button" role="tab" aria-controls="pills-patients-4" aria-selected="false">Melissa John</button>
+											</li>
+										</ol>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="col-lg-8 col-md-8 col-12 p-0">
+					<div class="tab-content" id="pills-tabContent">
+						<div class="tab-pane fade show active" id="pills-patients-1" role="tabpanel" aria-labelledby="pills-patients-1-tab">
+							<div class="chatting-box">
+								<a href="#!" class="header">
+									<div class="img-box">
+										<img src="images/nurse.png" alt="img">
+									</div>
+									<div class="text-box">
+										<h1 class="title">John Doe</h1>
+									</div>
+								</a>
+								<div class="chat-middle">
+									<div class="message sender">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+
+									<div class="message receiver">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>	
+
+									<div class="message sender">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+
+									<div class="message receiver">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+								</div>
+
+								<div class="chat-bottom">
+									<div class="form-group">
+										<textarea>Write Message</textarea>
+										<button><img src="images/paper-plane.png" alt="img"></button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="pills-patients-2" role="tabpanel" aria-labelledby="pills-patients-2-tab">
+							<div class="chatting-box">
+								<a href="#!" class="header">
+									<div class="img-box">
+										<img src="images/nurse.png" alt="img">
+									</div>
+									<div class="text-box">
+										<h1 class="title">Kelvin Kline</h1>
+									</div>
+								</a>
+								<div class="chat-middle">
+									<div class="message sender">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+
+									<div class="message receiver">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>	
+
+									<div class="message sender">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+
+									<div class="message receiver">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+								</div>
+
+								<div class="chat-bottom">
+									<div class="form-group">
+										<textarea>Write Message</textarea>
+										<button><img src="images/paper-plane.png" alt="img"></button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="pills-patients-3" role="tabpanel" aria-labelledby="pills-patients-3-tab">
+							<div class="chatting-box">
+								<a href="#!" class="header">
+									<div class="img-box">
+										<img src="images/nurse.png" alt="img">
+									</div>
+									<div class="text-box">
+										<h1 class="title">Albert Dun</h1>
+									</div>
+								</a>
+								<div class="chat-middle">
+									<div class="message sender">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+
+									<div class="message receiver">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>	
+
+									<div class="message sender">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+
+									<div class="message receiver">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+								</div>
+
+								<div class="chat-bottom">
+									<div class="form-group">
+										<textarea>Write Message</textarea>
+										<button><img src="images/paper-plane.png" alt="img"></button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="pills-patients-4" role="tabpanel" aria-labelledby="pills-patients-4-tab">
+							<div class="chatting-box">
+								<a href="#!" class="header">
+									<div class="img-box">
+										<img src="images/nurse.png" alt="img">
+									</div>
+									<div class="text-box">
+										<h1 class="title">Melissa John</h1>
+									</div>
+								</a>
+								<div class="chat-middle">
+									<div class="message sender">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+
+									<div class="message receiver">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>	
+
+									<div class="message sender">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+
+									<div class="message receiver">
+										<div class="img-box">
+											<img src="images/nurse.png">
+										</div>
+										<p class="message-content">
+											Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, suscipit!
+										</p>
+										<p class="date-time">5 Hours Ago</p>
+									</div>
+								</div>
+
+								<div class="chat-bottom">
+									<div class="form-group">
+										<textarea>Write Message</textarea>
+										<button><img src="images/paper-plane.png" alt="img"></button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+
+
+	<!-- JQUERY-->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<!-- JQUERY-->
+	<!-- BOOTSTRAP-->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	<!-- BOOTSTRAP-->
+</body>
+</html>
+
